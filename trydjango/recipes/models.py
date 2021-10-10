@@ -1,8 +1,11 @@
+import pint
 from django.conf import settings
 from django.db import models
 
 from .validators import validate_unit_of_measure
 from .utils import number_str_to_float
+
+
 # Create your models here.
 
 class Recipe(models.Model):
@@ -14,6 +17,9 @@ class Recipe(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
+
+    def get_absolute_url(self):
+        return '/pantry/recipes/'
 
 
 class RecipeIngredient(models.Model):
@@ -29,6 +35,27 @@ class RecipeIngredient(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
+
+    def get_absolute_url(self):
+        return self.recipe.get_absolute_url()
+
+
+    def convert_to_system(self, system='mks'):
+        if self.quantity_as_float is None:
+            return None
+        ureg = pint.UnitRegistry(system=system)
+        measurment = self.quantity_as_float * ureg[self.unit]
+        return measurment.to_base_units()
+
+    def as_mks(self):
+        # meter kilogram second
+        measurment = self.convert_to_system(system='mks')
+        return measurment.to_base_units()
+
+    def as_imperial(self):
+        # miles pounds seconds
+        measurment = self.convert_to_system(system='imperial')
+        return measurment.to_base_units()
 
     def save(self, *args, **kwargs):
         qty = self.quantity
