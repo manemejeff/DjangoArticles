@@ -64,9 +64,9 @@ def recipe_update_view(request, id=None):
         parent.save()
         for form in formset:
             child = form.save(commit=False)
-            if child.recipe is None:
-                child.recipe = parent
+            child.recipe = parent
             child.save()
         context['message'] = 'Data saved.'
-        return redirect(obj.get_absolute_url())
+    if request.htmx:
+        return render(request, 'recipes/partials/forms.html', context)
     return render(request, 'recipes/create-update.html', context)
