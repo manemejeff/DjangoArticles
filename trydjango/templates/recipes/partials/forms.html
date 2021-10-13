@@ -1,4 +1,4 @@
-<form action="." method="POST" hx-post="." hx-swap="outerHTML">
+<form class="htmx-request" action="." method="POST" hx-post="." hx-swap="outerHTML">
     {% csrf_token %}
     {% if message %}
     <p>{{message}}</p>
@@ -26,6 +26,7 @@
     <div id="empty-form" class="hidden">{{formset.empty_form.as_p}}</div>
     <button id="add-more" type="button">Add more</button>
     {% endif %}
+    <div class="htmx-indicator">Loading...</div>
     <div style="margin-top:10px">
         <button type="submit">Save</button>
     </div>

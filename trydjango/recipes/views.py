@@ -61,7 +61,6 @@ def recipe_create_view(request, id=None):
 def recipe_update_view(request, id=None):
     obj = get_object_or_404(Recipe, id=id, user=request.user)
     form = RecipeForm(request.POST or None, instance=obj)
-    form_2 = RecipeIngredientForm(request.POST or None)
     RecipeIngredientFormset = modelformset_factory(
         RecipeIngredient,
         form=RecipeIngredientForm,
